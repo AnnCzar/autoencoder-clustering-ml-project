@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+*.egg-info/
+venv/
+.env
+
+# Data
+data/raw/
+data/processed/
+*.csv
+*.npy
+*.pkl
+
+# Experiments 
+experiments/
+*.pt
+*.pth
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# OS
+.DS_Store
+Thumbs.db
+
+start.md

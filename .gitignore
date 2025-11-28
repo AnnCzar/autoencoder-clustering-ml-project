@@ -32,3 +32,22 @@ experiments/
 Thumbs.db
 
 start.md
+
+
+touch data/raw/.gitkeep
+touch data/processed/.gitkeep
+
+touch experiments/.gitkeep
+
+touch src/clustering/.gitkeep
+touch src/data/.gitkeep
+touch src/evaluation/.gitkeep
+touch src/models/.gitkeep
+touch src/training/.gitkeep
+touch src/utils/.gitkeep
+
+touch scripts/.gitkeep
+touch notebooks/.gitkeep
+touch tests/.gitkeep
+touch docs/.gitkeep
+touch configs/.gitkeep

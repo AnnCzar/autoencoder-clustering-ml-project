@@ -8,7 +8,7 @@ class Encoder(nn.Module):
         super(Encoder, self).__init__()
 
         # conv11
-        self.conv11 = nn.Conv2d(1, 32, kernel_size = 3, padding=1)
+        self.conv11 = nn.Conv2d(3, 32, kernel_size = 3, padding=1)
         self.bn11 = nn.BatchNorm2d(32)
 
         # conv12
@@ -30,8 +30,8 @@ class Encoder(nn.Module):
         # conv32
         self.conv32 = nn.Conv2d(128, 128, 3, padding=1)
         self.bn32 = nn.BatchNorm2d(128)
-        # self.ap32 = nn.AvgPool2d(kernel_size=7, stride=7, padding=0)       
-        self.poo31 = nn.AdaptiveAvgPool2d((1, 1)) # change for datasets with different input size COVID-19
+        self.ap32 = nn.AvgPool2d(kernel_size=7, stride=7, padding=0)       
+        # self.ap32 = nn.AdaptiveAvgPool2d((1, 1)) # change for datasets with different input size COVID-19
         
         # latent space
         self.fc = nn.Linear(128, latent_dim)
@@ -74,7 +74,7 @@ class Encoder(nn.Module):
         x = F.relu(x)
 
 
-        x = self.poo31(x)
+        x = self.ap32(x)
 
         # flatten
         x = torch.flatten(x, 1)

@@ -38,7 +38,7 @@ experiments/*
 Thumbs.db
 
 start.md
-
+training_results
 
 touch data/raw/.gitkeep
 touch data/processed/.gitkeep

@@ -9,33 +9,44 @@ class Decoder(nn.Module):
         self.latent_dim = latent_dim
 
         # latent vector -> tensor 128x8x8
-        self.fc = nn.Linear(latent_dim, 128*8*8)
+        self.fc = nn.Linear(latent_dim, 128)
 
-        # blok 1: 8x8 -> 16x16
+        
+        # 1x1 -> 8x8
+        self.up0 = nn.Upsample(scale_factor=8, mode='nearest')
+        self.conv0 = nn.Conv2d(128, 128, kernel_size=3, padding=1)
+        self.bn0 = nn.BatchNorm2d(128)
+
+        # 8x8 -> 16x16
         self.up1 = nn.Upsample(scale_factor=2, mode='nearest')
         self.conv1 = nn.Conv2d(128, 64, kernel_size=3, padding=1)
         self.bn1 = nn.BatchNorm2d(64)
 
-        # blok 2: 16x16 -> 32x32
+        # 16x16 -> 32x32
         self.up2 = nn.Upsample(scale_factor=2, mode='nearest')
         self.conv2 = nn.Conv2d(64, 32, kernel_size=3, padding=1)
         self.bn2 = nn.BatchNorm2d(32)
 
-        #  32x32 -> 32x32x3
+        # 32x32 -> 32x32x3
         self.conv3 = nn.Conv2d(32, 3, kernel_size=3, padding=1)
 
     def forward(self, x):
-        # latent vector -> tensor 128x8x8
+        # latent vector -> tensor 128x1x1
         x = self.fc(x)
-        x = x.view(-1, 128, 8, 8)
+        x = x.view(-1, 128, 1, 1)
 
-        # blok 1
+        x = self.up0(x)
+        x = self.conv0(x)
+        x = self.bn0(x)
+        x = F.relu(x)
+
+  
         x = self.up1(x)
         x = self.conv1(x)
         x = self.bn1(x)
         x = F.relu(x)
 
-        # blok 2
+
         x = self.up2(x)
         x = self.conv2(x)
         x = self.bn2(x)

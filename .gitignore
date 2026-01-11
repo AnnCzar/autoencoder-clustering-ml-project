@@ -38,6 +38,7 @@ experiments/*
 Thumbs.db
 
 start.md
+pytorch_tutorial.md
 training_results
 
 touch data/raw/.gitkeep

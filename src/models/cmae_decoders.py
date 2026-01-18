@@ -26,6 +26,8 @@ class PixelDecoder(nn.Module):
         
 
         self.conv3 = nn.Conv2d(32, 3, kernel_size=3, padding=1)
+
+        self.dropout = nn.Dropout(p=0.3)
     
     def forward(self, x):
 
@@ -48,7 +50,7 @@ class PixelDecoder(nn.Module):
         x = F.relu(x)  # (B, 32, 32, 32)
         
         x = self.conv3(x)  # (B, 3, 32, 32)
-        x = torch.sigmoid(x)  # [0, 1]
+        # x = torch.sigmoid(x)  # [0, 1]  # zakomentować jak maskujemy patche
         
         return x
 

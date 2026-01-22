@@ -32,7 +32,9 @@ class Encoder(nn.Module):
         self.bn32 = nn.BatchNorm2d(128)
         self.ap32 = nn.AvgPool2d(kernel_size=7, stride=7, padding=0)       
         # self.ap32 = nn.AdaptiveAvgPool2d((1, 1)) # change for datasets with different input size COVID-19
-        
+
+        self.dropout = nn.Dropout(p=0.3)
+
         # latent space
         self.fc = nn.Linear(128, latent_dim)
         self.latent_dim = latent_dim

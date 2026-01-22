@@ -4,6 +4,8 @@ import torchvision.transforms as transforms
 import matplotlib.pyplot as plt
 import numpy as np
 import os
+import random as random_module
+from torch.utils.data import Subset
 
 def get_data_dir():
     """Zwraca ścieżkę do folderu z danymi"""
@@ -69,6 +71,76 @@ def get_cifar10_loaders(batch_size=64):
     )
 
     return train_loader, validate_loader, test_loader
+
+
+def create_and_load_subset_c10(num_classes, batch_size=64, selected_classes=None, seed=None):
+    total_classes = 10
+    DATA_DIR = get_data_dir()
+
+    if seed is not None:
+        random_module.seed(seed)
+        np.random.seed(seed)
+        torch.manual_seed(seed)
+
+    transform = transforms.Compose([
+        transforms.ToTensor(),
+    ])
+
+    full_dataset = torchvision.datasets.CIFAR10(
+        root=DATA_DIR,
+        train=True,
+        download=True,
+        transform=transform
+    )
+
+    full_test_ds = torchvision.datasets.CIFAR10(
+        root=DATA_DIR,
+        train=False,
+        download=True,
+        transform=transform
+    )
+
+    all_labels = np.array(full_dataset.targets)
+    all_labels_test = np.array(full_test_ds.targets)
+
+    if selected_classes is None:
+        selected_classes = random_module.sample(range(total_classes), num_classes)
+        print(f"Wylosowano nowe klasy: {selected_classes}")
+    else:
+        print(f"UÅ¼ywam podanych klas: {selected_classes}")
+
+
+    mask = np.isin(all_labels, selected_classes)
+    mask_test = np.isin(all_labels_test, selected_classes)
+
+    subset_indices = np.where(mask)[0]
+    subset_indices_test = np.where(mask_test)[0]
+
+    subset = Subset(full_dataset, subset_indices)
+    subset_test = Subset(full_test_ds, subset_indices_test)
+
+    train_size = int(0.8 * len(subset))
+    test_size = len(subset) - train_size
+    train_set, val_set = torch.utils.data.random_split(subset, [train_size, test_size])
+
+    train_loader = torch.utils.data.DataLoader(
+        train_set,
+        batch_size=batch_size,
+        shuffle=True
+    )
+
+    val_loader = torch.utils.data.DataLoader(
+        val_set,
+        batch_size=batch_size,
+        shuffle=True
+    )
+    test_loader = torch.utils.data.DataLoader(
+        subset_test,
+        batch_size=batch_size,
+        shuffle=False,
+    )
+
+    return subset, selected_classes, train_loader, val_loader, test_loader
 
 # if __name__ == '__main__':
 #     train_loader, validate_loader, test_loader = get_cifar10_loaders()

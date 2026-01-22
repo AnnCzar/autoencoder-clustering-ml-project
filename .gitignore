@@ -38,7 +38,10 @@ experiments/*
 Thumbs.db
 
 start.md
+pytorch_tutorial.md
 training_results
+
+trening_cmae_rozpiska.md
 
 touch data/raw/.gitkeep
 touch data/processed/.gitkeep

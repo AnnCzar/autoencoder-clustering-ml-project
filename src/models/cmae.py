@@ -46,7 +46,7 @@ class CMAE(nn.Module):
             # momentum=0.996, # parameter for updating the target encoder
             momentum = 0.99,
             temperature=0.07, # temperature for contrastive loss
-            contrastive_loss_weight=1, # weight for contrastive loss
+            contrastive_loss_weight=0.5, # weight for contrastive loss
     ):
         
         super().__init__()

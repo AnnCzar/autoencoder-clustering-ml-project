@@ -77,23 +77,18 @@ class CMAE(nn.Module):
         for p in self.target_projector_head.parameters():
             p.requires_grad = False
 
-        self.color_jitter = T.ColorJitter(
-                brightness=0.4,  # 40% jasności
-                contrast=0.4,  # 40% kontrastu
-                saturation=0.4,  # ±40% saturacji
-                hue=0.1  # ±10% odcienia
-            )
-
 
     def forward(self, x):
 
-        # do augumentacji obrazów
-        view_online, view_target = self.pixel_shift_transform(x)
-        x_masked, mask = self.random_masking(view_online)
+        # --- pixel shifting
+        # view_online, view_target = self.pixel_shift_transform(x)
+        # x_masked, mask = self.random_masking(view_online)
 
-        # x_masked, mask = self.random_masking(x)
-        # view_target = x
-        # view_online = x
+
+        # --- bez pixel shifting
+        x_masked, mask = self.random_masking(x)
+        view_target = x
+        view_online = x
 
 
         # -----------online branch
@@ -111,9 +106,10 @@ class CMAE(nn.Module):
             latent_target = self.target_encoder(view_target)
             projected_target = self.target_projector_head(latent_target)
 
+
         return {
             'loss_recon': (view_online, reconstructed, mask),  # Dane do straty rekonstrukcji
-            # 'loss_contrast': (projected_online, projected_target), # Dane do straty kontrastywnej
+            # 'loss_contrast': (projected_online, projected_target), # Dane do straty kontrastywnej bez predictora
             'loss_contrast': (predicted, projected_target),  # Dane do straty kontrastywnej
             'reconstructed_image': reconstructed  # Do wizualizacji
         }
@@ -153,15 +149,15 @@ class CMAE(nn.Module):
 
     def pixel_shift_transform(self, x, shift_range=2):
         """
-        Implementacja pixel shifting + Color Jittering
+        Implementacja pixel shifting
 
         Args:
             x: Input image [B, C, H, W]
-            shift_range: Maximum pixel shift (p in paper)
+            shift_range: Maximum pixel shift
 
         Returns:
-            view_online: View for online encoder (NO color aug)
-            view_target: View for momentum encoder (WITH color aug)
+            view_online: View for online encoder
+            view_target: View for momentum encoder
         """
         B, C, H, W = x.shape
         p = shift_range
@@ -174,13 +170,6 @@ class CMAE(nn.Module):
         view_online = x_pad[:, :, p:p+H, p:p+W]
         view_target = x_pad[:, :, rh:rh+H, rw:rw+W]
 
-        # view_target_list = []
-        # for i in range(B):
-        #     img = view_target[i]  # [C, H, W]
-        #     img_aug = self.color_jitter(img)
-        #     view_target_list.append(img_aug)
-        #
-        # view_target = torch.stack(view_target_list, dim=0)
 
         return view_online, view_target
 
@@ -199,6 +188,7 @@ class CMAE(nn.Module):
             param_k.data = self.momentum * param_k.data + (1 - self.momentum) * param_q.data
 
     def compute_loss(self, outputs):
+        # Strata rekonstrukcji
 
         original, reconstructed, mask = outputs['loss_recon']
         B, C, H, W = original.shape

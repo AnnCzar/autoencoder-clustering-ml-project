@@ -7,9 +7,6 @@ import os
 import random as random_module
 from torch.utils.data import Subset
 
-from torch.utils.data import Subset
-
-
 def get_data_dir():
     """Zwraca ścieżkę do folderu z danymi"""
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -75,6 +72,7 @@ def get_cifar10_loaders(batch_size=64):
 
     return train_loader, validate_loader, test_loader
 
+
 def create_and_load_subset_c10(num_classes, batch_size=64, selected_classes=None, seed=None):
     total_classes = 10
     DATA_DIR = get_data_dir()
@@ -109,7 +107,7 @@ def create_and_load_subset_c10(num_classes, batch_size=64, selected_classes=None
         selected_classes = random_module.sample(range(total_classes), num_classes)
         print(f"Wylosowano nowe klasy: {selected_classes}")
     else:
-        print(f"Używam podanych klas: {selected_classes}")
+        print(f"UÅ¼ywam podanych klas: {selected_classes}")
 
 
     mask = np.isin(all_labels, selected_classes)
@@ -143,10 +141,6 @@ def create_and_load_subset_c10(num_classes, batch_size=64, selected_classes=None
     )
 
     return subset, selected_classes, train_loader, val_loader, test_loader
-
-
-
-
 
 # if __name__ == '__main__':
 #     train_loader, validate_loader, test_loader = get_cifar10_loaders()

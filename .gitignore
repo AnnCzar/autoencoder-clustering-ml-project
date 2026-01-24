@@ -43,20 +43,8 @@ training_results
 
 trening_cmae_rozpiska.md
 
-touch data/raw/.gitkeep
-touch data/processed/.gitkeep
+!src/analysis/*.csv
+!src/analysis/*.png
+!src/analysis/*.eps
 
-touch experiments/.gitkeep
-
-touch src/clustering/.gitkeep
-touch src/data/.gitkeep
-touch src/evaluation/.gitkeep
-touch src/models/.gitkeep
-touch src/training/.gitkeep
-touch src/utils/.gitkeep
-
-touch scripts/.gitkeep
-touch notebooks/.gitkeep
-touch tests/.gitkeep
-touch docs/.gitkeep
-touch configs/.gitkeep
+!experiments/**/cifar100/**/*_classes*/**/all_models_summary_*_classes.csv
